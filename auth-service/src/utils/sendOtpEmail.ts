@@ -1,5 +1,3 @@
-// src/services/sendOtpEmail.ts
-
 import generateOtp from './generateOtp';
 import sendMail from './mailer';
 
@@ -8,7 +6,6 @@ export const sendOtpEmail = async (user: { name: string; email: string }) => {
 
   const html = `
     <div style="font-family:Arial, sans-serif; padding: 20px; color: #333;">
-      <img src="https://yourdomain.com/logo.png" alt="logo" width="100" />
       <h2>Welcome to <span style="color:#4A90E2;">MyCoolApp</span>!</h2>
       <p>Hi ${user.name},</p>
       <p>Your OTP is: <strong>${code}</strong></p>
