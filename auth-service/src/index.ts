@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express, { Response, Request, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import cookieParser from 'cookie-parser';
 import { config } from './configs/app.config';
 import connectDb from './configs/dB.config';
 
@@ -28,6 +29,7 @@ const redisClient = new Redis();
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   logger.info(`Received ${req.method} from ${req.url}`);
