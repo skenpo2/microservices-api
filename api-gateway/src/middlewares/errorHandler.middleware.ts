@@ -1,9 +1,9 @@
 import { ZodError } from 'zod';
 import formatZodError from '../utils/format-zodError';
 import { ErrorRequestHandler } from 'express';
-import { HTTPSTATUS } from '../configs/http.config';
 import logger from '../utils/logger';
 import { AppError } from '../utils/appError';
+import { HTTPSTATUS } from '../configs/http.config';
 
 const errorHandler: ErrorRequestHandler = (error, req, res, next): any => {
   logger.error(`Error occurred on PATH: ${req.path} `, error);
