@@ -21,6 +21,34 @@ import logger from '../utils/logger';
 import { otpSchema } from '../validations/otp.validations';
 import generateJwtToken from '../utils/generateJwt';
 import UserModel from '../models/user.model';
+import { config } from '../configs/app.config';
+
+export const googleCallbackController = AsyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user as any;
+    const { accessToken, refreshToken } = await generateJwtToken(user);
+
+    if (!user) {
+      return res.redirect(
+        `${config.FRONTEND_GOOGLE_CALLBACK_URL}?status=failure`
+      );
+    }
+
+    return res
+      .status(HTTPSTATUS.OK)
+      .cookie('jwt', refreshToken, {
+        httpOnly: true,
+        sameSite: 'none',
+        secure: true,
+        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+      })
+      .json({
+        success: true,
+        message: 'Signed in  successfully',
+        token: accessToken,
+      });
+  }
+);
 
 export const registerUserController = AsyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -86,7 +114,7 @@ export const verifyLoginController = AsyncHandler(
         success: true,
         message: 'login successful',
         user,
-        accessToken,
+        token: accessToken,
       });
   }
 );
@@ -196,7 +224,7 @@ export const refreshTokenController = AsyncHandler(
       })
       .json({
         success: true,
-        accessToken,
+        token: accessToken,
       });
   }
 );

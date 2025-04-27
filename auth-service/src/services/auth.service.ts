@@ -11,8 +11,39 @@ import logger from '../utils/logger';
 import { verifyOtp } from '../utils/verifyOtp';
 import PasswordResetTokenModel from '../models/passwordReset';
 import RefreshTokenModel from '../models/refreshToken.model';
-import { error } from 'console';
 
+export const googleLoginOrCreateAccountService = async (body: {
+  provider: string;
+  displayName: string;
+  providerId: string;
+  picture?: string;
+  email?: string;
+}) => {
+  const { provider, displayName, providerId, picture, email } = body;
+
+  try {
+    let user = await UserModel.findOne({ email });
+    if (!user) {
+      // Create a new user if it doesn't exist
+      user = new UserModel({
+        email,
+        name: displayName,
+        profilePicture: picture || null,
+      });
+      await user.save();
+
+      const account = new AccountModel({
+        userId: user._id,
+        provider: provider,
+        providerId: providerId,
+        isVerified: true,
+      });
+      await account.save();
+    }
+
+    return user;
+  } catch (error) {}
+};
 export const registerUserService = async (body: {
   email: string;
   password: string;

@@ -1,9 +1,12 @@
 import 'dotenv/config';
 import express, { Response, Request, NextFunction } from 'express';
+import { config } from './configs/app.config';
+import passport from 'passport';
+import './configs/passport.config';
 import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
-import { config } from './configs/app.config';
+
 import connectDb from './configs/dB.config';
 
 import { RateLimiterRedis } from 'rate-limiter-flexible';
@@ -17,6 +20,8 @@ import { HTTPSTATUS } from './configs/http.config';
 import authRoutes from './routes/auth.routes';
 
 const app = express();
+
+app.use(passport.initialize());
 
 // Database connection
 connectDb();
@@ -72,6 +77,16 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 //     sendCommand: (...args) => redisClient.call(...args),
 //   }),
 // });
+
+app.get(
+  '/api/private',
+  passport.authenticate('jwt', { session: false }),
+  (req, res) => {
+    console.log('private endPoint hit allowed');
+    console.log(req.user?.id);
+    res.send('This is a protected route!');
+  }
+);
 
 app.use('/auth', authRoutes);
 

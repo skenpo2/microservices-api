@@ -1,6 +1,7 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import {
   getResetPasswordOtpController,
+  googleCallbackController,
   loginController,
   logoutController,
   refreshTokenController,
@@ -10,8 +11,22 @@ import {
   verifyRegisterController,
   verifyResetPasswordOtpController,
 } from '../controllers/auth.controllers';
+import passport from 'passport';
 
 const router = express.Router();
+
+// Start Google OAuth
+router.get(
+  '/google',
+  passport.authenticate('google', { scope: ['profile', 'email'] })
+);
+
+// Handle callback
+router.get(
+  '/google/callback',
+  passport.authenticate('google', { session: false }),
+  googleCallbackController
+);
 
 router.post('/register', registerUserController);
 router.post('/verify-register', verifyRegisterController);
