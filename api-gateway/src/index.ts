@@ -57,13 +57,12 @@ const proxyOptions = {
   },
 };
 
-//setting up proxy for our identity service
+//setting up proxy for auth service
 app.use(
   '/v1/auth',
   proxy(config.IDENTITY_SERVICE_URL, {
     ...proxyOptions,
     proxyReqOptDecorator: (proxyReqOpts, srcReq) => {
-      // Ensure headers is defined before assigning to it
       if (!proxyReqOpts.headers) {
         proxyReqOpts.headers = {};
       }
