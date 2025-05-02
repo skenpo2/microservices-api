@@ -85,9 +85,7 @@ app.use(errorHandler);
 app.listen(config.PORT, () => {
   logger.info(`Server is listening on ${config.PORT} in ${config.NODE_ENV}`);
 
-  logger.info(
-    `Identity service is running on port ${config.IDENTITY_SERVICE_URL}`
-  );
+  logger.info(`Auth service is running on port ${config.IDENTITY_SERVICE_URL}`);
 });
 
 process.on('unhandledRejection', (reason, promise) => {
